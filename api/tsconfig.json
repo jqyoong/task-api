@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "lib": ["esnext"],
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "outDir": "build",
+        "baseUrl": "./src",
+        "skipLibCheck": true,
+        "strict": true,
+        "paths": {
+            "@services/*": ["services/*"],
+            "@repos/*": ["repos/*"],
+            "@models/*": ["models/*"],
+            "@helpers/*": ["helpers/*"],
+            "@configs/*": ["configs/*"],
+            "@locales/*": ["locales/*"],
+            "@def/*": ["def/*"],
+            "@routes/*": ["routes/*"],
+            "@middlewares/*": ["middlewares/*"],
+            "@root/*": ["./*"]
+        }
+    },
+    "tsc-alias": {
+        "verbose": false,
+        "resolveFullPaths": true,
+        "debug": true,
+        "fileExtensions": {
+            "inputGlob": "{js,jsx,mjs}",
+            "outputCheck": ["js", "json", "jsx", "mjs"]
+        }
+    },
+    "include": ["./**/*.ts", "./tests/**/*.ts", "knexfile.ts", "loader.ts"],
+    "exclude": ["node_modules", "dist"]
+}

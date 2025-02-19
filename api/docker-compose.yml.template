@@ -1,0 +1,13 @@
+version: '3.0'
+
+services:
+    db-primary:
+        container_name: NAME_CONTAINER-db-primary
+        image: postgres:16.4
+        environment:
+            - POSTGRES_DB=api
+            - POSTGRES_USER=api
+            - POSTGRES_PASSWORD=guessme
+            - PGPORT=5432
+        ports:
+            - 5432:5432
