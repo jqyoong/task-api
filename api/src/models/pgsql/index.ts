@@ -4,12 +4,13 @@ import { drizzle, PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import nconf from 'nconf';
 
-import { Configurations } from '@models/pgsql/schemas';
+import { Configurations, Tasks } from '@models/pgsql/schemas';
 import { withReplicas } from 'drizzle-orm/pg-core';
 import { ExtractTablesWithRelations } from 'drizzle-orm';
 
 export const Schemas = {
   Configurations,
+  Tasks,
 };
 
 export type ExtractSchemaTablesWithRelations<T extends Record<string, unknown>> = ExtractTablesWithRelations<T>;

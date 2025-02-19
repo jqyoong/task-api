@@ -23,7 +23,6 @@ import {
 } from 'drizzle-orm/pg-core';
 import { SQL, and, isNull } from 'drizzle-orm/sql';
 import type { PostgresJsQueryResultHKT } from 'drizzle-orm/postgres-js';
-import cloneDeep from 'lodash.clonedeep';
 
 import { Tracer, Alerts, Logger, DbError } from '@helpers/index';
 
@@ -235,10 +234,10 @@ abstract class BaseRepository<TSchema extends PgTableWithColumns<any>, U extends
    *
    * - post process s3 storage path to a private s3 URL and cache it
    *
-   * @param {InferSelectModel<TSchema>} row
-   * @returns {Promise<InferSelectModel<TSchema>>}
+   * @param {InferSelectModel<TSchema> | InferSelectModel<TSchema>[]} row
+   * @returns {Promise<InferSelectModel<TSchema> | InferSelectModel<TSchema>[]>}
    */
-  async afterFind(row: InferSelectModel<TSchema>) {
+  async afterFind(row: InferSelectModel<TSchema> | InferSelectModel<TSchema>[]) {
     return row;
   }
 
