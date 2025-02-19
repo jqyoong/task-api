@@ -6,6 +6,7 @@ import nconf from 'nconf';
 import AutoLoad from '@fastify/autoload';
 
 import * as pgDb from '@models/pgsql';
+import * as appRepo from '@repos/index';
 
 import { Consts } from '@helpers/index';
 import { DRIZZLE_DBCONFIG } from '@configs/db';
@@ -19,7 +20,9 @@ const app: FastifyPluginCallback = async (app, opts: FastifyPluginOptions, done)
       return pgDb.init({ dbConns: DRIZZLE_DBCONFIG });
     }
   });
-
+  app.register(async () => {
+    await appRepo.init();
+  });
   app.register(import('@fastify/helmet'), { global: true });
   app.register(import('@fastify/cors'), { origin: '*' });
   app.register(import('fastify-language-parser'), {
