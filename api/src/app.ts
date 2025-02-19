@@ -6,11 +6,12 @@ import nconf from 'nconf';
 import { v4 as uuid } from 'uuid';
 import AutoLoad from '@fastify/autoload';
 
+import * as modelSchemas from '@routes/schemas/base/index';
 import * as pgDb from '@models/pgsql';
 import * as appRepo from '@repos/index';
 import TSLib from '@locales/index';
 
-import { CustomError, Logger, Tracer, Alerts, Consts } from '@helpers/index';
+import { CustomError, Logger, Tracer, Alerts, Consts, FastitfySwagger } from '@helpers/index';
 import { DRIZZLE_DBCONFIG } from '@configs/db';
 
 const supportedLocales = nconf.get('SUPPORTED_LOCALES');
@@ -18,7 +19,13 @@ const translationsShelf = await TSLib({ supportedLocales });
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const ENABLE_SENTRY_TOGGLE = nconf.get('ENABLE_SENTRY_TOGGLE');
 
+FastitfySwagger.init({ modelSchemas });
+
 const app: FastifyPluginCallback = async (app, opts: FastifyPluginOptions, done) => {
+  app.addHook('onRoute', (routeOptions) => {
+    FastitfySwagger.onRouteHook(routeOptions);
+  });
+
   app.register(async () => {
     if (nconf.get('ENVIRONMENT') === Consts.ENV.local) {
       return pgDb.init({ dbConns: DRIZZLE_DBCONFIG });
@@ -48,6 +55,15 @@ const app: FastifyPluginCallback = async (app, opts: FastifyPluginOptions, done)
     },
     keyGenerator: (req) => {
       return req.headers['x-real-ip'] ? `${req.headers['x-real-ip']}` : req?.connection?.remoteAddress || req.ip;
+    },
+  });
+  await app.register(import('@fastify/swagger'), {
+    openapi: {
+      openapi: '3.1.0',
+      components: {
+        schemas: FastitfySwagger.schemas,
+      },
+      tags: FastitfySwagger.modelTags,
     },
   });
   // This loads all plugins defined in plugins

@@ -5,5 +5,6 @@ import DbError from '@helpers/DbError';
 import Logger from '@helpers/Logger';
 import Tracer from '@helpers/Tracer';
 import Utilities from '@helpers/Utilities';
+import FastitfySwagger from '@helpers/FastifySwagger';
 
-export { Alerts, Consts, CustomError, DbError, Logger, Tracer, Utilities };
+export { Alerts, Consts, CustomError, DbError, Logger, Tracer, Utilities, FastitfySwagger };
