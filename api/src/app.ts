@@ -11,7 +11,7 @@ import * as pgDb from '@models/pgsql';
 import * as appRepo from '@repos/index';
 import TSLib from '@locales/index';
 
-import { CustomError, Logger, Tracer, Alerts, Consts, FastitfySwagger } from '@helpers/index';
+import { CustomError, Logger, Tracer, Alerts, Consts, FastitfySwagger, Utilities } from '@helpers/index';
 import { DRIZZLE_DBCONFIG } from '@configs/db';
 
 const supportedLocales = nconf.get('SUPPORTED_LOCALES');
@@ -83,6 +83,14 @@ const app: FastifyPluginCallback = async (app, opts: FastifyPluginOptions, done)
     }),
     ignorePattern: /(?:test|spec|config)\.ts$/,
     maxDepth: 2,
+  });
+
+  app.addHook('preSerialization', async (req, reply, payload) => {
+    if (Utilities.hasPagination(payload)) {
+      payload.pagination = Utilities.toSnakeCase(payload.pagination);
+    }
+
+    return payload;
   });
 
   app.setErrorHandler((error: FastifyError & CustomError & { id: string }, req: FastifyRequest, reply: FastifyReply) => {
