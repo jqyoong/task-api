@@ -49,6 +49,13 @@ class TasksRepo extends BaseRepository<schema, typeof tableName> {
     };
   }
 
+  async afterCreate(row: InferSelectModel<schema>): Promise<InferSelectModel<schema> & { status: string }> {
+    return {
+      ...row,
+      status: this.calculateStatus(row.due_date),
+    };
+  }
+
   getTasks({
     columns,
     paginationConfig,

@@ -21,4 +21,24 @@ const GetTasksSchema = {
   },
 };
 
-export { GetTasksSchema };
+const PostNewTaskSchema = {
+  summary: 'Create new task.',
+  body: Type.Object(
+    {
+      name: Type.String(),
+      description: Type.Optional(Type.String()),
+      due_date: Type.Optional(Type.String()),
+    },
+    { additionalProperties: false }
+  ),
+  response: {
+    200: Type.Object({
+      task: taskResponse,
+    }),
+    400: {
+      errors: ['MISSING_TASK_NAME', 'UNABLE_CREATE_TASK'],
+    },
+  },
+};
+
+export { GetTasksSchema, PostNewTaskSchema };

@@ -6,4 +6,5 @@ export default {
   UNABLE_CREATE_TASK: 'Unable to create task, please try again',
   UNABLE_UPDATE_TASK: 'Unable to update task, please try again',
   UNABLE_DELETE_TASK: 'Unable to delete task, please try again',
+  MISSING_TASK_NAME: 'Missing task name',
 };
