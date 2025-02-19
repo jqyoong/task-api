@@ -13,7 +13,9 @@
     "migrate:db": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:latest",
     "migrate:rollback": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:rollback",
     "migrate:next": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:up",
-    "migrate:undo": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:down"
+    "migrate:undo": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:down",
+    "test": "ENVIRONMENT=testing vitest run --coverage",
+    "test:watch": "vitest -w"
   },
   "keywords": [],
   "author": "",
