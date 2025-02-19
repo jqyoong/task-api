@@ -50,6 +50,12 @@ const app: FastifyPluginCallback = async (app, opts: FastifyPluginOptions, done)
   // those should be support plugins that are reused
   // through your application
   app.register(AutoLoad, {
+    dir: path.join(__dirname, 'middlewares'),
+    forceESM: true,
+    options: Object.assign({}, opts),
+  });
+
+  app.register(AutoLoad, {
     dir: path.join(__dirname, 'routes/v1'),
     forceESM: true,
     options: Object.assign(opts, {
