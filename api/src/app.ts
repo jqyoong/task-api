@@ -5,10 +5,21 @@ import { FastifyPluginCallback, FastifyPluginOptions } from 'fastify';
 import nconf from 'nconf';
 import AutoLoad from '@fastify/autoload';
 
+import * as pgDb from '@models/pgsql';
+
+import { Consts } from '@helpers/index';
+import { DRIZZLE_DBCONFIG } from '@configs/db';
+
 const supportedLocales = nconf.get('SUPPORTED_LOCALES');
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const app: FastifyPluginCallback = async (app, opts: FastifyPluginOptions, done) => {
+  app.register(async () => {
+    if (nconf.get('ENVIRONMENT') === Consts.ENV.local) {
+      return pgDb.init({ dbConns: DRIZZLE_DBCONFIG });
+    }
+  });
+
   app.register(import('@fastify/helmet'), { global: true });
   app.register(import('@fastify/cors'), { origin: '*' });
   app.register(import('fastify-language-parser'), {
