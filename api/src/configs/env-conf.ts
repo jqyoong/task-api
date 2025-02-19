@@ -12,7 +12,7 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
  * @returns {void}
  */
 export default async ({ nconf, configs = {} }: { nconf: Provider; configs?: Record<string, unknown> }) => {
-    const filePath = path.join(__dirname, 'dev.json');
+  const filePath = path.join(__dirname, 'dev.json');
 
-    nconf.overrides(configs).argv({ parseValues: true }).env({ parseValues: true }).file({ file: filePath });
+  nconf.overrides(configs).argv({ parseValues: true }).env({ parseValues: true }).file({ file: filePath });
 };
