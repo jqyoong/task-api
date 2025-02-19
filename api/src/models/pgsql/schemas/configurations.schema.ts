@@ -12,7 +12,8 @@ export const Configurations = pgTable('Configurations', {
     .default(sql`now()`),
   updated_at: timestamp('updated_at', { withTimezone: true, mode: 'date' })
     .notNull()
-    .default(sql`now()`),
+    .default(sql`now()`)
+    .$onUpdate(() => new Date()),
   deleted_at: timestamp('deleted_at', { withTimezone: true, mode: 'date' })
     .default(sql`null`)
     .$type<Date | null>(),

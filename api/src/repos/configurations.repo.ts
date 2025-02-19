@@ -9,7 +9,7 @@ type schema = typeof Configurations;
 class ConfigurationsRepo extends BaseRepository<schema, typeof tableName> {
   constructor(db: DBInstance | null | undefined) {
     if (!db) return;
-    super({ db, table: Configurations, tableName, hasTimestamps: true, softDelete: true });
+    super({ db, table: Configurations, tableName, softDelete: true });
   }
 }
 

@@ -53,7 +53,6 @@ type SelectResultFields<TSelectedFields, TDeep extends boolean = true> = Simplif
  */
 export type ExtractSchemaTablesWithRelations<T extends Record<string, unknown>> = ExtractTablesWithRelations<T>;
 
-export type THasTimeStamps<T extends PgTable> = boolean | [keyof T['_']['columns'] | null, keyof T['_']['columns'] | null];
 export type TSoftDelete<T extends PgTable> = boolean | keyof T['_']['columns'];
 
 /**
@@ -116,26 +115,12 @@ abstract class BaseRepository<TSchema extends PgTableWithColumns<any>, U extends
   db: DBInstance;
   table: TSchema;
   #tableName: U;
-  hasTimestamps?: THasTimeStamps<TSchema>;
   softDelete?: TSoftDelete<TSchema>;
 
-  constructor({
-    db,
-    table,
-    tableName,
-    hasTimestamps,
-    softDelete,
-  }: {
-    db: DBInstance;
-    table: TSchema;
-    tableName: U;
-    hasTimestamps?: THasTimeStamps<TSchema>;
-    softDelete?: TSoftDelete<TSchema>;
-  }) {
+  constructor({ db, table, tableName, softDelete }: { db: DBInstance; table: TSchema; tableName: U; softDelete?: TSoftDelete<TSchema> }) {
     this.db = db;
     this.table = table;
     this.#tableName = tableName;
-    this.hasTimestamps = hasTimestamps;
     this.softDelete = softDelete;
   }
 
@@ -355,7 +340,6 @@ abstract class BaseRepository<TSchema extends PgTableWithColumns<any>, U extends
       throwError: true,
       promise: async () => {
         let where;
-        let _updateValue = cloneDeep(value);
 
         if (opts?.where) {
           if ('queryChunks' in opts.where) {
@@ -365,17 +349,7 @@ abstract class BaseRepository<TSchema extends PgTableWithColumns<any>, U extends
           }
         }
 
-        if (this.hasTimestamps) {
-          const updateField = (Array.isArray(this.hasTimestamps) && this.hasTimestamps?.[1]) || 'updated_at';
-          _updateValue = {
-            ..._updateValue,
-            ...{
-              [updateField]: new Date(),
-            },
-          };
-        }
-
-        const qb = (opts?.tx || this.db).update(this.table).set(_updateValue).where(where);
+        const qb = (opts?.tx || this.db).update(this.table).set(value).where(where);
 
         if (opts?.fields) {
           qb.returning(opts?.fields);
