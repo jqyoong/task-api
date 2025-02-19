@@ -65,6 +65,10 @@ const app: FastifyPluginCallback = async (app, opts: FastifyPluginOptions, done)
     maxDepth: 2,
   });
 
+  app.addHook('onClose', async () => {
+    pgDb.closeDbConns;
+  });
+
   done();
 };
 
