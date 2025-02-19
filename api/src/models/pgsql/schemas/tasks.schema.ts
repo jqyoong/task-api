@@ -1,14 +1,11 @@
 import { sql } from 'drizzle-orm';
-import { pgTable, text, timestamp, bigserial, pgEnum } from 'drizzle-orm/pg-core';
-
-const statusEnum = pgEnum('taskStatus', ['not_urgent', 'due_soon', 'overdue']);
+import { pgTable, text, timestamp, bigserial } from 'drizzle-orm/pg-core';
 
 export const Tasks = pgTable('Tasks', {
   id: bigserial('id', { mode: 'number' }).primaryKey(),
   name: text('name'),
   description: text('description'),
   due_date: timestamp('due_date', { withTimezone: true, mode: 'date' }),
-  status: statusEnum(),
   created_at: timestamp('created_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .default(sql`now()`),
@@ -21,4 +18,6 @@ export const Tasks = pgTable('Tasks', {
     .$type<Date | null>(),
 });
 
-export type Task = typeof Tasks.$inferSelect;
+export type Task = typeof Tasks.$inferSelect & {
+  status: 'not_urgent' | 'due_soon' | 'overdue';
+};
