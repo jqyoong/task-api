@@ -1,4 +1,6 @@
 import { type Task } from '@models/pgsql/schemas';
+import { type SQL } from 'drizzle-orm';
+import omitBy from 'lodash.omitby';
 
 import { repos } from '@repos/index';
 import { CustomError } from '@helpers/index';
@@ -25,6 +27,23 @@ class TaskService {
     if (!task && throwError) throw new CustomError({ message: 'UNABLE_GET_TASK', statusCode: 404 });
 
     return task;
+  }
+
+  async updateTaskById({ id, value, throwError = false }: { id: Task['id']; value: Partial<Task>; throwError?: boolean }) {
+    const updatedTask = await repos.Task?.update(
+      omitBy(value, (v) => v === undefined || v === null),
+      {
+        where(fields, operators) {
+          const filters: SQL[] = [];
+          filters.push(operators.eq(fields.id, id));
+          return operators.and(...filters);
+        },
+      }
+    );
+
+    if (!updatedTask && throwError) throw new CustomError({ message: 'UNABLE_UPDATE_TASK', statusCode: 404 });
+
+    return updatedTask;
   }
 
   async createNewTask({

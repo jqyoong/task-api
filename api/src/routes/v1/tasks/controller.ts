@@ -2,7 +2,7 @@ import { type Task } from '@models/pgsql/schemas/tasks.schema';
 import { type OrderByColumn } from '@def/types/drizzle';
 import { FastifyReplyTypebox, FastifyRequestTypebox } from '@def/types/fastify-typebox';
 
-import { GetTasksSchema, PostNewTaskSchema, GetTaskByIdSchema } from './schemas';
+import { GetTasksSchema, PostNewTaskSchema, GetTaskByIdSchema, PutUpdateTaskByIdSchema } from './schemas';
 
 const taskService = (await import('@services/common/task')).asDefault;
 import { Tracer, Utilities } from '@helpers/index';
@@ -59,6 +59,30 @@ class TaskController {
       },
     });
   }
+
+  async updateTaskById(
+    req: FastifyRequestTypebox<typeof PutUpdateTaskByIdSchema>,
+    reply: FastifyReplyTypebox<typeof PutUpdateTaskByIdSchema>
+  ) {
+    return Tracer.traceFunction({
+      name: 'controller.updateTaskById',
+      promise: async () => {
+        const { id } = req.params;
+        const { name, description, due_date } = req.body;
+
+        const task =
+          (
+            await taskService.updateTaskById({
+              id,
+              value: { name, description, due_date: due_date ? new Date(due_date) : null },
+            })
+          )?.[0] || null;
+
+        return reply.send({ task });
+      },
+    });
+  }
+
   async createNewTask(req: FastifyRequestTypebox<typeof PostNewTaskSchema>, reply: FastifyReplyTypebox<typeof PostNewTaskSchema>) {
     return Tracer.traceFunction({
       name: 'controller.createNewTask',

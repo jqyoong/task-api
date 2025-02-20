@@ -58,4 +58,27 @@ const PostNewTaskSchema = {
   },
 };
 
-export { GetTasksSchema, PostNewTaskSchema, GetTaskByIdSchema };
+const PutUpdateTaskByIdSchema = {
+  summary: 'Update task by task id.',
+  params: Type.Object({
+    id: Type.Number(),
+  }),
+  body: Type.Object(
+    {
+      name: Type.Optional(Type.String()),
+      description: Type.Optional(Type.String()),
+      due_date: Type.Optional(Type.String()),
+    },
+    { additionalProperties: false }
+  ),
+  response: {
+    200: Type.Object({
+      task: taskResponse,
+    }),
+    400: {
+      errors: ['UNABLE_UPDATE_TASK'],
+    },
+  },
+};
+
+export { GetTasksSchema, PostNewTaskSchema, GetTaskByIdSchema, PutUpdateTaskByIdSchema };

@@ -1,4 +1,5 @@
 import { PaginationConfig, PaginationResponse } from '@def/types/drizzle';
+import { PgUpdateSetSource } from 'drizzle-orm/pg-core';
 
 import { and, count, SQL, type InferSelectModel, ilike } from 'drizzle-orm';
 import type { DBInstance } from '@models/pgsql';
@@ -50,6 +51,23 @@ class TasksRepo extends BaseRepository<schema, typeof tableName> {
   }
 
   async afterCreate(row: InferSelectModel<schema>): Promise<InferSelectModel<schema> & { status: string }> {
+    return {
+      ...row,
+      status: this.calculateStatus(row.due_date),
+    };
+  }
+
+  async beforeUpdate(row: PgUpdateSetSource<schema>): Promise<PgUpdateSetSource<schema>> {
+    if (row.name === '') {
+      delete row.name;
+    }
+
+    return {
+      ...row,
+    };
+  }
+
+  async afterUpdate(row: InferSelectModel<schema>): Promise<InferSelectModel<schema> & { status: string }> {
     return {
       ...row,
       status: this.calculateStatus(row.due_date),

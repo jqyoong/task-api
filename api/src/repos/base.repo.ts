@@ -177,10 +177,10 @@ abstract class BaseRepository<TSchema extends PgTableWithColumns<any>, U extends
   /**
    * A hook that is invoked right before a row is updated.
    *
-   * @param {InferSelectModel<TSchema>} row
-   * @returns {Promise<InferSelectModel<TSchema>>}
+   * @param {PgUpdateSetSource<TSchema>} row
+   * @returns {Promise<PgUpdateSetSource<TSchema>>}
    */
-  async beforeUpdate(row: InferSelectModel<TSchema>): Promise<InferSelectModel<TSchema>> {
+  async beforeUpdate(row: PgUpdateSetSource<TSchema>): Promise<PgUpdateSetSource<TSchema>> {
     return row;
   }
 
@@ -348,7 +348,9 @@ abstract class BaseRepository<TSchema extends PgTableWithColumns<any>, U extends
           }
         }
 
-        const qb = (opts?.tx || this.db).update(this.table).set(value).where(where);
+        const _value = await this.beforeUpdate(value);
+
+        const qb = (opts?.tx || this.db).update(this.table).set(_value).where(where);
 
         if (opts?.fields) {
           qb.returning(opts?.fields);
