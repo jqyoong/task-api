@@ -11,6 +11,7 @@
     "lint": "eslint --ext \".ts\" --ignore-path .gitignore .",
     "commit:lint": "eslint --ignore-path .gitignore --fix --quiet",
     "commit:prettier": "prettier --write --ignore-unknown",
+    "build": "npm run build:clean && node build.mjs",
     "migrate:add": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:make",
     "migrate:db": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:latest",
     "migrate:rollback": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:rollback",

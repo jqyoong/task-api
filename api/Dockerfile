@@ -12,7 +12,7 @@ LABEL maintainer="yoongjunquan@gmail.com"
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
-RUN npm run build:mjs
+RUN npm run build
 
 
 FROM node:20.11.0-slim AS runner
