@@ -5,8 +5,16 @@ import { CustomError } from '@helpers/index';
 import { PaginationConfig } from '@def/types/drizzle';
 
 class TaskService {
-  async getTasks({ paginationConfig, throwError = false }: { paginationConfig: PaginationConfig<Task>; throwError?: boolean }) {
-    const tasksResponse = await repos.Task?.getTasks({ paginationConfig });
+  async getTasks({
+    taskName,
+    paginationConfig,
+    throwError = false,
+  }: {
+    taskName?: Task['name'];
+    paginationConfig: PaginationConfig<Task>;
+    throwError?: boolean;
+  }) {
+    const tasksResponse = await repos.Task?.getTasks({ taskName, paginationConfig });
     if (!tasksResponse?.collections && throwError) throw new CustomError({ message: 'UNABLE_GET_TASKS', statusCode: 404 });
 
     return tasksResponse;

@@ -1,3 +1,5 @@
+import { type Task } from '@models/pgsql/schemas/tasks.schema';
+import { type OrderByColumn } from '@def/types/drizzle';
 import { FastifyReplyTypebox, FastifyRequestTypebox } from '@def/types/fastify-typebox';
 
 import { GetTasksSchema, PostNewTaskSchema, GetTaskByIdSchema } from './schemas';
@@ -10,19 +12,33 @@ class TaskController {
     return Tracer.traceFunction({
       name: 'controller.getTasks',
       promise: async () => {
-        const { get_all, page, page_size } = req.query;
+        const { get_all, page, page_size, name, sort } = req.query;
 
-        const tasks = await taskService.getTasks({
-          paginationConfig: {
-            withCount: true,
-            limit: get_all ? undefined : page_size,
-            offset: get_all ? undefined : Utilities.getPageOffSet(page, page_size),
-            orderByColumns: [
+        const orderByColumns = sort
+          ? sort.split(',').map((sortItem) => {
+              const parts = sortItem.split('_');
+              const direction = parts[parts.length - 1];
+              const column = parts.slice(0, -1).join('_') as keyof Task;
+
+              return {
+                column,
+                orderBy: direction as 'asc' | 'desc',
+              };
+            })
+          : ([
               {
                 column: 'created_at',
                 orderBy: 'desc',
               },
-            ],
+            ] as OrderByColumn<Task>[]);
+
+        const tasks = await taskService.getTasks({
+          taskName: name,
+          paginationConfig: {
+            withCount: true,
+            limit: get_all ? undefined : page_size,
+            offset: get_all ? undefined : Utilities.getPageOffSet(page, page_size),
+            orderByColumns,
           },
         });
 

@@ -8,7 +8,9 @@ const GetTasksSchema = {
   summary: 'Get tasks.',
   querystring: Type.Object({
     ...PaginationQueryString,
+    name: Type.Optional(Type.String()),
     get_all: Type.Optional(Type.Boolean()),
+    sort: Type.Optional(Type.RegExp(/^\w+_(desc|asc)(?:,\w+_(desc|asc))*$/)),
   }),
   response: {
     200: Type.Object({

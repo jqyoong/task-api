@@ -1,6 +1,6 @@
 import { PaginationConfig, PaginationResponse } from '@def/types/drizzle';
 
-import { and, count, SQL, type InferSelectModel } from 'drizzle-orm';
+import { and, count, SQL, type InferSelectModel, ilike } from 'drizzle-orm';
 import type { DBInstance } from '@models/pgsql';
 
 import dayjs from 'dayjs';
@@ -57,10 +57,12 @@ class TasksRepo extends BaseRepository<schema, typeof tableName> {
   }
 
   getTasks({
+    taskName = '',
     columns,
     paginationConfig,
     throwError = true,
   }: {
+    taskName?: Task['name'];
     columns?: { [key in keyof Task]?: boolean };
     paginationConfig: PaginationConfig<Task>;
     throwError?: boolean;
@@ -70,6 +72,9 @@ class TasksRepo extends BaseRepository<schema, typeof tableName> {
       promise: async () => {
         const whereQuery = () => {
           const filters: SQL[] = [];
+          if (taskName) {
+            filters.push(ilike(Tasks.name, `%${taskName}%`));
+          }
           return and(...filters);
         };
         let totalCount = 0;
