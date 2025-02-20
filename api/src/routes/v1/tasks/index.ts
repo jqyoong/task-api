@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 
-import { GetTasksSchema, PostNewTaskSchema } from './schemas';
+import { GetTasksSchema, PostNewTaskSchema, GetTaskByIdSchema } from './schemas';
 
 import TaskController from './controller';
 
@@ -12,6 +12,15 @@ const routes: FastifyPluginAsync = async (server) => {
       schema: GetTasksSchema,
     },
     TaskController.getTasks
+  );
+
+  server.get(
+    '/:id',
+    {
+      preValidation: [server.jwtAuthentication],
+      schema: GetTaskByIdSchema,
+    },
+    TaskController.getTaskById
   );
 
   server.post(

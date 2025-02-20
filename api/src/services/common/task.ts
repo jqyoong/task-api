@@ -12,6 +12,13 @@ class TaskService {
     return tasksResponse;
   }
 
+  async getTaskById({ id, throwError = false }: { id: Task['id']; throwError?: boolean }) {
+    const task = await repos.Task?.getTaskById({ id });
+    if (!task && throwError) throw new CustomError({ message: 'UNABLE_GET_TASK', statusCode: 404 });
+
+    return task;
+  }
+
   async createNewTask({
     name,
     description,

@@ -1,6 +1,6 @@
 import { FastifyReplyTypebox, FastifyRequestTypebox } from '@def/types/fastify-typebox';
 
-import { GetTasksSchema, PostNewTaskSchema } from './schemas';
+import { GetTasksSchema, PostNewTaskSchema, GetTaskByIdSchema } from './schemas';
 
 const taskService = (await import('@services/common/task')).asDefault;
 import { Tracer, Utilities } from '@helpers/index';
@@ -31,6 +31,18 @@ class TaskController {
     });
   }
 
+  async getTaskById(req: FastifyRequestTypebox<typeof GetTaskByIdSchema>, reply: FastifyReplyTypebox<typeof GetTaskByIdSchema>) {
+    return Tracer.traceFunction({
+      name: 'controller.getTaskById',
+      promise: async () => {
+        const { id } = req.params;
+
+        const task = await taskService.getTaskById({ id });
+
+        return reply.send({ task });
+      },
+    });
+  }
   async createNewTask(req: FastifyRequestTypebox<typeof PostNewTaskSchema>, reply: FastifyReplyTypebox<typeof PostNewTaskSchema>) {
     return Tracer.traceFunction({
       name: 'controller.createNewTask',

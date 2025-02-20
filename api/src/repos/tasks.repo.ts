@@ -109,6 +109,24 @@ class TasksRepo extends BaseRepository<schema, typeof tableName> {
       },
     }) as unknown as PaginationResponse<Task[]>;
   }
+
+  getTaskById({ id, columns, throwError = true }: { id: Task['id']; columns?: { [key in keyof Task]?: boolean }; throwError?: boolean }) {
+    return this.modelHandler({
+      throwError,
+      promise: async () => {
+        const chat = await this.findFirst({
+          where(fields, operators) {
+            const filters: SQL[] = [];
+            filters.push(operators.eq(fields.id, id));
+            return operators.and(...filters);
+          },
+          columns,
+        });
+
+        return chat;
+      },
+    }) as unknown as Task;
+  }
 }
 
 export default TasksRepo;

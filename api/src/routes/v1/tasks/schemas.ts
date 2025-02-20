@@ -21,6 +21,21 @@ const GetTasksSchema = {
   },
 };
 
+const GetTaskByIdSchema = {
+  summary: 'Get task by task id.',
+  params: Type.Object({
+    id: Type.Number(),
+  }),
+  response: {
+    200: Type.Object({
+      task: taskResponse,
+    }),
+    400: {
+      errors: ['UNABLE_GET_TASK'],
+    },
+  },
+};
+
 const PostNewTaskSchema = {
   summary: 'Create new task.',
   body: Type.Object(
@@ -41,4 +56,4 @@ const PostNewTaskSchema = {
   },
 };
 
-export { GetTasksSchema, PostNewTaskSchema };
+export { GetTasksSchema, PostNewTaskSchema, GetTaskByIdSchema };
