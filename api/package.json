@@ -9,13 +9,23 @@
     "dev:build": "node build/server.js",
     "start": "tsx watch src/server.ts | pino-pretty --colorize",
     "lint": "eslint --ext \".ts\" --ignore-path .gitignore .",
+    "commit:lint": "eslint --ignore-path .gitignore --fix --quiet",
+    "commit:prettier": "prettier --write --ignore-unknown",
     "migrate:add": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:make",
     "migrate:db": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:latest",
     "migrate:rollback": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:rollback",
     "migrate:next": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:up",
     "migrate:undo": "NODE_OPTIONS=\"--loader ./loader.js\" knex migrate:down",
     "test": "ENVIRONMENT=testing vitest run --coverage",
-    "test:watch": "vitest -w"
+    "test:watch": "vitest -w",
+    "prepare": "if test \"$NODE_ENV\" != \"production\" ; then cd .. && husky api/.husky ; fi "
+  },
+  "lint-staged": {
+    "*": "npm run commit:prettier",
+    "*.{js,jsx,ts,tsx,json}": [
+      "npm run commit:prettier",
+      "npm run commit:lint"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -72,6 +82,8 @@
     "eslint": "^8.51.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
     "openapi-types": "12.1.3",
     "prettier": "^3.5.1",
     "redoc": "^2.4.0",

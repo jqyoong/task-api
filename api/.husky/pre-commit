@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd api
+npx --no-install lint-staged
